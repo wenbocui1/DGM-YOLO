@@ -1,0 +1,35 @@
+# LWDPCB-YOLO reference configuration (nano)
+model:
+  num_classes: 6
+  wavelet: true            # WaveletPool instead of CBS strided downsampling
+  num_boxes: 100           # top-100 initial boxes routed to DCBG
+  neck_channels: 128
+
+dcbg:
+  T: 1000
+  beta_start: 0.0001
+  beta_end: 0.02
+  inference_taus: [100, 75, 50, 25]   # DDIM deterministic subsequence, eta=0
+  cond_dim: 128
+  hidden: 256
+
+sadf:
+  lambda: 1.0
+  mu: 3.0
+
+data:
+  img_size: 640
+  splits:                  # paper Section 4.1 novel-class splits
+    1: [4, 5]
+    2: [1, 2]
+    3: [0, 4]
+  shots: [1, 2, 3, 5, 10, 30]
+
+train:
+  backbone_frozen: true
+  optimizer: adamw
+  lr: 0.001
+  weight_decay: 0.0005
+  epochs: 300
+  batch_size: 16
+  augment: [hflip, hsv, mosaic, mixup]
